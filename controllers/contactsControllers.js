@@ -10,7 +10,7 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 import HttpError from "../helpers/HttpError.js";
 
-const getAllContacts = async (req, res) => {
+const getAllContacts = async (req, res, next) => {
   try {
     const result = await listContacts();
     res.json(result);
@@ -19,7 +19,7 @@ const getAllContacts = async (req, res) => {
   }
 };
 
-const getOneContact = async (req, res) => {
+const getOneContact = async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await getContactById(id);
@@ -32,7 +32,7 @@ const getOneContact = async (req, res) => {
   }
 };
 
-const createContact = async (req, res) => {
+const createContact = async (req, res, next) => {
   try {
     const result = await addContact(req.body);
     res.status(201).json(result);
@@ -41,7 +41,7 @@ const createContact = async (req, res) => {
   }
 };
 
-export const deleteContact = async (req, res) => {
+export const deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await removeContact(id);
@@ -54,7 +54,7 @@ export const deleteContact = async (req, res) => {
   }
 };
 
-const updateContact = async (req, res) => {
+const updateContact = async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await updateContactById(id, req.body);
