@@ -9,6 +9,10 @@ import {
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 import HttpError from "../helpers/HttpError.js";
+import {
+  createContactSchema,
+  updateContactSchema,
+} from "../schemas/contactsSchemas.js";
 
 const getAllContacts = async (req, res, next) => {
   try {
@@ -34,6 +38,11 @@ const getOneContact = async (req, res, next) => {
 
 const createContact = async (req, res, next) => {
   try {
+    const { error } = createContactSchema.validate(req.body);
+    if (error) {
+      throw HttpError(400, error.message);
+    }
+
     const result = await addContact(req.body);
     res.status(201).json(result);
   } catch (error) {
@@ -56,6 +65,10 @@ export const deleteContact = async (req, res, next) => {
 
 const updateContact = async (req, res, next) => {
   try {
+    const { error } = updateContactSchema.validate(req.body);
+    if (error) {
+      throw HttpError(400, error.message);
+    }
     const { id } = req.params;
     const result = await updateContactById(id, req.body);
     if (!result) {
