@@ -9,10 +9,6 @@ import {
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 import HttpError from "../helpers/HttpError.js";
-import {
-  createContactSchema,
-  updateContactSchema,
-} from "../schemas/contactsSchemas.js";
 
 const getAllContacts = async (req, res) => {
   const result = await listContacts();

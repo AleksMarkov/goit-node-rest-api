@@ -2,8 +2,8 @@
   "name": "goit-node-rest-api",
   "type": "module",
   "scripts": {
-    "start": "node ./hw02-express/app.js",
-    "dev": "nodemon ./hw02-express/app.js"
+    "start": "node ./app.js",
+    "dev": "nodemon ./app.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
