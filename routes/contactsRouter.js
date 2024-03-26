@@ -9,13 +9,15 @@ import {
 
 import validateBody from "../decorators/validateBody.js";
 
+import isValidId from "../middlewares/isValidID";
+
 const contactsRouter = express.Router();
 
 contactsRouter.get("/", contactsControllers.getAllContacts);
 
-contactsRouter.get("/:id", contactsControllers.getOneContact);
+contactsRouter.get("/:id", isValidId, contactsControllers.getOneContact);
 
-contactsRouter.delete("/:id", contactsControllers.deleteContact);
+contactsRouter.delete("/:id", isValidId, contactsControllers.deleteContact);
 
 contactsRouter.post(
   "/",
@@ -25,8 +27,16 @@ contactsRouter.post(
 
 contactsRouter.put(
   "/:id",
+  isValidId,
   validateBody(updateContactSchema),
   contactsControllers.updateContact
+);
+
+contactsRouter.put(
+  "/:id/favorite",
+  isValidId,
+  validateBody(updateContactSchema),
+  contactsControllers.updateStatusContact
 );
 
 export default contactsRouter;
