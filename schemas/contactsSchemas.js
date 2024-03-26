@@ -13,5 +13,9 @@ export const updateContactSchema = Joi.object({
   phone: Joi.string(),
   favorite: Joi.boolean(),
 })
-  .or("name", "email", "phone", "favorite")
+  .or("name", "email", "phone")
   .error(new Error("Body must have at least one field"));
+
+export const updateStatusSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
