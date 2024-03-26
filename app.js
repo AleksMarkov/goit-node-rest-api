@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import mongoose from "mongoose";
+import "dotenv/config";
 
 import contactsRouter from "./routes/contactsRouter.js";
 
@@ -22,11 +23,8 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-const DB_HOST =
-  "mongodb+srv://Alex:Wc0ACo4c6nXgH4AD@cluster0.ntapvkf.mongodb.net/db-contacts?retryWrites=true&w=majority&appName=Cluster0";
-
 mongoose
-  .connect(DB_HOST)
+  .connect(process.env.DB_HOST)
   .then(() => {
     app.listen(3000, () => {
       console.log("Server is running. Use our API on port: 3000");
@@ -37,5 +35,3 @@ mongoose
     console.log(error.message);
     process.exit(1);
   });
-
-// MongoDB Atlas:Login: Alex, password: Wc0ACo4c6nXgH4AD
