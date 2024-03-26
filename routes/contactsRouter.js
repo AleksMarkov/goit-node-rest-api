@@ -4,7 +4,8 @@ import contactsControllers from "../controllers/contactsControllers.js";
 
 import {
   createContactSchema,
-  updateContactSchema,
+  updateContactSchema1,
+  updateContactSchema2,
   updateStatusSchema,
 } from "../schemas/contactsSchemas.js";
 
@@ -29,7 +30,8 @@ contactsRouter.post(
 contactsRouter.put(
   "/:id",
   isValidId,
-  validateBody(updateContactSchema),
+  validateBody(updateContactSchema1),
+  validateBody(updateContactSchema2),
   contactsControllers.updateContact
 );
 
