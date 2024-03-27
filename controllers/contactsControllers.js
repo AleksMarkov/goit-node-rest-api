@@ -4,6 +4,7 @@ import {
   addContact,
   removeContact,
   updateContactById,
+  updateStatusContactById,
 } from "../services/contactsServices.js";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
@@ -49,7 +50,7 @@ const updateContact = async (req, res) => {
 
 const updateStatusContact = async (req, res) => {
   const { id } = req.params;
-  const result = await updateContactById(id, req.body);
+  const result = await updateStatusContactById(id, req.body);
   if (!result) {
     throw HttpError(404, `Not found`);
   }
