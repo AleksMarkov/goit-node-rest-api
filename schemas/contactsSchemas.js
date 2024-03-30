@@ -16,6 +16,7 @@ export const createContactSchema = Joi.object({
     "string.empty": "Phone cannot be empty.",
     "string.base": "Phone must be a string.",
   }),
+  // owner: Joi.string().required(),
 });
 
 export const updateContactSchema1 = Joi.object({

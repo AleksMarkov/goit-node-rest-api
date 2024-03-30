@@ -1,10 +1,11 @@
 import {
   listContacts,
-  getContactById,
+  getContactByFilter,
   addContact,
-  removeContact,
-  updateContactById,
+  removeContactByFilter,
+  updateContactByFilter,
   updateStatusContactById,
+  countContacts,
 } from "../services/contactsServices.js";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
@@ -12,13 +13,19 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res) => {
-  const result = await listContacts();
-  res.json(result);
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
+  const result = await listContacts({ owner }, { skip, limit });
+  const total = await countContacts({ owner });
+
+  res.json({ result, total });
 };
 
 const getOneContact = async (req, res) => {
+  const { _id: owner } = req.user;
   const { id } = req.params;
-  const result = await getContactById(id);
+  const result = await getContactByFilter({ owner, _id: id });
   if (!result) {
     throw HttpError(404, `Not found`);
   }
@@ -26,13 +33,15 @@ const getOneContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-  const result = await addContact(req.body);
+  const { _id: owner } = req.user;
+  const result = await addContact({ ...req.body, owner });
   res.status(201).json(result);
 };
 
 export const deleteContact = async (req, res) => {
+  const { _id: owner } = req.user;
   const { id } = req.params;
-  const result = await removeContact(id);
+  const result = await removeContactByFilter({ owner, _id: id });
   if (!result) {
     throw HttpError(404, `Not found`);
   }
@@ -40,8 +49,9 @@ export const deleteContact = async (req, res) => {
 };
 
 const updateContact = async (req, res) => {
+  const { _id: owner } = req.user;
   const { id } = req.params;
-  const result = await updateContactById(id, req.body);
+  const result = await updateContactByFilter({ owner, _id: id }, req.body);
   if (!result) {
     throw HttpError(404, `Not found`);
   }
@@ -49,8 +59,9 @@ const updateContact = async (req, res) => {
 };
 
 const updateStatusContact = async (req, res) => {
+  const { _id: owner } = req.user;
   const { id } = req.params;
-  const result = await updateStatusContactById(id, req.body);
+  const result = await updateStatusContactById({ owner, _id: id }, req.body);
   if (!result) {
     throw HttpError(404, `Not found`);
   }
