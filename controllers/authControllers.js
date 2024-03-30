@@ -13,7 +13,7 @@ const signup = async (req, res) => {
   const { email, password } = req.body;
   const user = await authServices.findUser({ email });
   if (user) {
-    throw HttpError(409, "Email already in use");
+    throw HttpError(409, "Email in use");
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
@@ -24,7 +24,10 @@ const signup = async (req, res) => {
   });
 
   res.status(201).json({
-    email: newUser.email,
+    user: {
+      email: newUser.email,
+      subscription: "starter",
+    },
   });
 };
 
@@ -32,11 +35,11 @@ const singin = async (req, res) => {
   const { email, password } = req.body;
   const user = await authServices.findUser({ email });
   if (!user) {
-    throw HttpError(401, "Email or password invalid");
+    throw HttpError(401, "Email or password wrong");
   }
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
-    throw HttpError(401, "Email or password invalid");
+    throw HttpError(401, "Email or password wrong");
   }
 
   const { _id: id } = user;
@@ -46,13 +49,34 @@ const singin = async (req, res) => {
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  await authServices.updateUser({ _id: id }, { token });
 
   res.json({
     token,
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
   });
+};
+
+const getCurrent = async (req, res) => {
+  const user = req.user;
+  res.json({
+    email: user.email,
+    subscription: user.subscription,
+  });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await authServices.updateUser({ _id }, { token: "" });
+  res.status(204).json({});
 };
 
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(singin),
+  getCurrent: ctrlWrapper(getCurrent),
+  logout: ctrlWrapper(logout),
 };
