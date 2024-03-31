@@ -13,3 +13,14 @@ export const userSigninSchema = Joi.object({
   email: Joi.string().pattern(emailRegepxp).required(),
   password: Joi.string().min(6).required(),
 });
+
+export const updateSubscriptionSchema = Joi.object({
+  subscription: Joi.string()
+    .valid("starter", "pro", "business")
+    .required()
+    .messages({
+      "any.required": "Subscription is required.",
+      "string.empty": "Subscription cannot be empty.",
+      "any.only": "Subscription must be one of ['starter', 'pro', 'business'].",
+    }),
+});
