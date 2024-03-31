@@ -14,10 +14,16 @@ import HttpError from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
-  const { page = 1, limit = 20 } = req.query;
+  const { page = 1, limit = 20, favorite } = req.query;
   const skip = (page - 1) * limit;
-  const result = await listContacts({ owner }, { skip, limit });
-  const total = await countContacts({ owner });
+  const filter = { owner };
+
+  if (favorite !== undefined) {
+    filter.favorite = favorite === "true";
+  }
+  const result = await listContacts(filter, { skip, limit });
+  const total = await countContacts(filter);
+
   res.json({ result, total });
 
   // without pagination:

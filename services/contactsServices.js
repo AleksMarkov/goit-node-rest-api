@@ -1,10 +1,9 @@
 import Contact from "../models/Contact.js";
 
-export const listContacts = (filter = {}, setting = {}) =>
-  Contact.find(filter, "-createdAt -updatedAt", setting).populate(
-    "owner",
-    "email"
-  );
+export const listContacts = (filter = {}, setting = {}) => {
+  const projection = "-createdAt -updatedAt";
+  return Contact.find(filter, projection, setting).populate("owner", "email");
+};
 
 export const countContacts = (filter) => Contact.countDocuments(filter);
 
