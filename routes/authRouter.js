@@ -15,23 +15,23 @@ import authenticate from "../middlewares/authenticate.js";
 const authRouter = express.Router();
 
 authRouter.post(
-  "/users/register",
+  "/register",
   validateBody(userSignupSchema),
   authControllers.signup
 );
 
 authRouter.post(
-  "/users/login",
+  "/login",
   validateBody(userSigninSchema),
   authControllers.signin
 );
 
-authRouter.get("/users/current", authenticate, authControllers.getCurrent);
+authRouter.get("/current", authenticate, authControllers.getCurrent);
 
-authRouter.post("/users/logout", authenticate, authControllers.logout);
+authRouter.post("/logout", authenticate, authControllers.logout);
 
 authRouter.patch(
-  "/users",
+  "/",
   authenticate,
   validateBody(updateSubscriptionSchema),
   authControllers.updateSubscription

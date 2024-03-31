@@ -10,7 +10,7 @@ export const countContacts = (filter) => Contact.countDocuments(filter);
 export const addContact = ({ name, email, phone, favorite, owner }) =>
   Contact.create({ name, email, phone, favorite, owner });
 
-export const getContactByFilter = (filter) => Contact.findById(filter);
+export const getContactByFilter = (filter) => Contact.findOne(filter);
 
 export const updateContactByFilter = (filter, data) =>
   Contact.findOneAndUpdate(filter, data, { new: true, runValidators: true });
@@ -18,5 +18,5 @@ export const updateContactByFilter = (filter, data) =>
 export const removeContactByFilter = (filter) =>
   Contact.findOneAndDelete(filter);
 
-export const updateStatusContactById = (id, data) =>
-  Contact.findByIdAndUpdate(id, data, { new: true, runValidators: true });
+export const updateStatusContactByFilter = (filter, data) =>
+  Contact.findOneAndUpdate(filter, data, { new: true, runValidators: true });

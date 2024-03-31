@@ -4,7 +4,7 @@ import {
   addContact,
   removeContactByFilter,
   updateContactByFilter,
-  updateStatusContactById,
+  updateStatusContactByFilter,
   countContacts,
 } from "../services/contactsServices.js";
 
@@ -25,11 +25,6 @@ const getAllContacts = async (req, res) => {
   const total = await countContacts(filter);
 
   res.json({ result, total });
-
-  // without pagination:
-  // const { _id: owner } = req.user;
-  // const result = await listContacts({ owner });
-  // res.json(result);
 };
 
 const getOneContact = async (req, res) => {
@@ -71,7 +66,10 @@ const updateContact = async (req, res) => {
 const updateStatusContact = async (req, res) => {
   const { _id: owner } = req.user;
   const { id } = req.params;
-  const result = await updateStatusContactById({ owner, _id: id }, req.body);
+  const result = await updateStatusContactByFilter(
+    { owner, _id: id },
+    req.body
+  );
   if (!result) {
     throw HttpError(404, `Not found`);
   }

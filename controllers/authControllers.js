@@ -79,11 +79,10 @@ const updateSubscription = async (req, res) => {
   const { _id, email } = req.user;
   console.log(subscription);
   console.log(_id);
-  await authServices.updateUser({ _id }, { subscription });
+  const user = await authServices.updateUser({ _id }, { subscription });
   console.log("await OK");
   res.json({
-    email: email,
-    subscription: subscription,
+    user,
   });
 };
 
