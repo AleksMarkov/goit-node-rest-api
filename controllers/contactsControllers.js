@@ -18,8 +18,12 @@ const getAllContacts = async (req, res) => {
   const skip = (page - 1) * limit;
   const result = await listContacts({ owner }, { skip, limit });
   const total = await countContacts({ owner });
-
   res.json({ result, total });
+
+  // without pagination:
+  // const { _id: owner } = req.user;
+  // const result = await listContacts({ owner });
+  // res.json(result);
 };
 
 const getOneContact = async (req, res) => {
