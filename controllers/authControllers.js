@@ -12,15 +12,12 @@ import HttpError from "../helpers/HttpError.js";
 import gravatar from "gravatar";
 import { fileURLToPath } from "url";
 import Jimp from "jimp";
-//
 
-// import { User } from "../models/User.js";
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const avatarsDir = path.join(dirname, "../", "public", "avatars");
 
-const avatarsDir = path.join(__dirname, "../", "public", "avatars");
-//
 const avatarPath = path.resolve("public", "avatars");
 
 const { JWT_SECRET } = process.env;
@@ -104,7 +101,6 @@ const updateSubscription = async (req, res) => {
 };
 
 const updateAvatar = async (req, res) => {
-  // const { subscription } = req.body;
   const { _id, email } = req.user;
   if (!req.file) {
     throw HttpError(400, "The file with avatar is not found");
@@ -125,15 +121,12 @@ const updateAvatar = async (req, res) => {
   const resultUpload = path.join(avatarsDir, filename);
   await fs.rename(tempUpload, resultUpload);
   const avatarURL = path.join("avatars", filename);
-  // await User.findByIdAndUpdate(_id, { avatarURL });
   const user = await authServices.updateUser({ _id, email }, { avatarURL });
 
   res.json({
     user,
   });
 };
-//
-//
 
 export default {
   signup: ctrlWrapper(signup),
