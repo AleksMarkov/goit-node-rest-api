@@ -1,3 +1,6 @@
+import fs from "fs/promises";
+import path from "path";
+
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -6,6 +9,19 @@ import * as authServices from "../services/authServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 import HttpError from "../helpers/HttpError.js";
+import gravatar from "gravatar";
+import { fileURLToPath } from "url";
+import Jimp from "jimp";
+//
+
+// import { User } from "../models/User.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
+//
+const avatarPath = path.resolve("public", "avatars");
 
 const { JWT_SECRET } = process.env;
 
@@ -18,15 +34,19 @@ const signup = async (req, res) => {
 
   const hashPassword = await bcrypt.hash(password, 10);
 
+  const url = gravatar.url(email);
+
   const newUser = await authServices.signup({
     ...req.body,
     password: hashPassword,
+    avatarURL: url,
   });
 
   res.status(201).json({
     user: {
       email: newUser.email,
-      subscription: "starter",
+      subscription: newUser.subscription,
+      avatarURL: newUser.avatarURL,
     },
   });
 };
@@ -77,14 +97,43 @@ const logout = async (req, res) => {
 const updateSubscription = async (req, res) => {
   const { subscription } = req.body;
   const { _id, email } = req.user;
-  console.log(subscription);
-  console.log(_id);
-  const user = await authServices.updateUser({ _id }, { subscription });
-  console.log("await OK");
+  const user = await authServices.updateUser({ _id, email }, { subscription });
   res.json({
     user,
   });
 };
+
+const updateAvatar = async (req, res) => {
+  // const { subscription } = req.body;
+  const { _id, email } = req.user;
+  if (!req.file) {
+    throw HttpError(400, "The file with avatar is not found");
+  }
+
+  const { path: tempUpload, originalname } = req.file;
+
+  try {
+    const image = await Jimp.read(tempUpload);
+    await image.resize(250, 250);
+    await image.writeAsync(tempUpload);
+  } catch (error) {
+    console.error("The file is corrupted and cannot be opened:", error);
+    throw HttpError(500, "Internal Server Error");
+  }
+
+  const filename = `${_id}_${originalname}`;
+  const resultUpload = path.join(avatarsDir, filename);
+  await fs.rename(tempUpload, resultUpload);
+  const avatarURL = path.join("avatars", filename);
+  // await User.findByIdAndUpdate(_id, { avatarURL });
+  const user = await authServices.updateUser({ _id, email }, { avatarURL });
+
+  res.json({
+    user,
+  });
+};
+//
+//
 
 export default {
   signup: ctrlWrapper(signup),
@@ -92,4 +141,5 @@ export default {
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateSubscription: ctrlWrapper(updateSubscription),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };
