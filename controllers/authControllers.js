@@ -124,7 +124,7 @@ const updateAvatar = async (req, res) => {
   const user = await authServices.updateUser({ _id, email }, { avatarURL });
 
   res.json({
-    user,
+    avatarURL: user.avatarURL,
   });
 };
 
