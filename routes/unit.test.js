@@ -9,6 +9,7 @@ const { DB_HOST, PORT = 4000 } = process.env;
 
 describe("test api/users/login route", () => {
   let server = null;
+
   beforeAll(async () => {
     await mongoose.connect(DB_HOST);
     server = app.listen(PORT);

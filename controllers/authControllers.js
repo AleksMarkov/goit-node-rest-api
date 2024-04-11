@@ -122,7 +122,6 @@ const updateAvatar = async (req, res) => {
   await fs.rename(tempUpload, resultUpload);
   const avatarURL = path.join("avatars", filename);
   const user = await authServices.updateUser({ _id, email }, { avatarURL });
-
   res.json({
     avatarURL: user.avatarURL,
   });
