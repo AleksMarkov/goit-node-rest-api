@@ -19,12 +19,6 @@ describe("test api/users/login route", () => {
     server.close();
   });
 
-  // beforeEach(() => {});
-
-  // afterEach(async () => {
-  //   await clearUsers();
-  // });
-
   test("test api/users/login with valid data", async () => {
     const signupData = {
       email: "pole@cactus.com",
