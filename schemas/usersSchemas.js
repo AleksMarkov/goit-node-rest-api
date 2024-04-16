@@ -25,3 +25,10 @@ export const updateSubscriptionSchema = Joi.object({
       "any.only": "Subscription must be one of ['starter', 'pro', 'business'].",
     }),
 });
+
+export const userEmailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegepxp).required().messages({
+    "any.required": "missing required field email.",
+    "string.empty": "Email cannot be empty.",
+  }),
+});
